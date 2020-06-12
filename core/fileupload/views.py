@@ -184,24 +184,28 @@ def index(request):
 
         try:
             fig, ax = plt.subplots(1)
-            red_patch = mpatches.Patch(color='red', label='red points are the Test Dataset')
-            blue_patch = mpatches.Patch(color='blue', label='blue points are the Base Dataset')
-            white_patch = mpatches.Patch(color='black', label='blue points are the Base Dataset')
+            red_patch = mpatches.Patch(facecolor='red', label='Test Dataset',edgecolor='black')
+            blue_patch = mpatches.Patch(facecolor='blue', label='Base Dataset',edgecolor='black')
+            white_patch = mpatches.Patch(facecolor='white', label='Base Dataset',edgecolor='black')
             shape_files3_reference.boundary.plot(ax=ax, edgecolor='black', figsize=(90, 90),)
             shape_files1_reference.plot(ax=ax, facecolor='blue', markersize=1)
             shape_files2_reference.plot(ax=ax, facecolor='red', markersize=1)
 
 
             savePath = os.path.abspath(os.path.join(os.path.join(os.path.dirname(__file__), 'static'), 'ShapePlot2.png'))
-            plt.legend(bbox_to_anchor=(0., 1.02, 1., .102),handles=[red_patch, blue_patch, white_patch],loc='upper center')
+            plt.legend(bbox_to_anchor=(0,1.01), loc='lower left', ncol=3, handles=[red_patch, blue_patch, white_patch])
             plt.xticks(rotation=45)
             plt.savefig(savePath)
 
             outPut_Reference = gpd.read_file(newShpPath)
             st = 'colFlag'
             fig, ax = plt.subplots(1)
+            red_patch = mpatches.Patch(facecolor='red', label='Base Dataset < Test Dataset',edgecolor='black')
+            blue_patch = mpatches.Patch(facecolor='blue', label='Base Dataset > Test Dataset',edgecolor='black')
+            white_patch = mpatches.Patch(facecolor='white', label='Base Dataset = Red Dataset', edgecolor='black')
             outPut_Reference.boundary.plot(ax=ax, facecolor=outPut_Reference[st], edgecolor='black' )
             savePath1 = os.path.abspath(os.path.join(os.path.join(os.path.dirname(__file__), 'static'), 'shapeAreas.png'))
+            plt.legend(bbox_to_anchor=(0, 1.01), loc='lower left', ncol=2, handles=[red_patch, blue_patch, white_patch])
             plt.xticks(rotation=45)
             plt.savefig(savePath1)
         except Exception as ex:
