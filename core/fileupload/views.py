@@ -6,6 +6,7 @@ from django.shortcuts import render
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import matplotlib.path as mpltPath
 from osgeo import ogr
 from numpy import double
 import numpy as np
@@ -46,7 +47,7 @@ def index(request):
         # outputShapeFileName = head + "to" + shape_files2.name
         # shape_files3_reference.to_file(os.path.abspath(os.path.join(os.path.join(os.path.dirname(__file__), 'outputData'), outputShapeFileName)))
         # shape_files3_reference.to_file(os.path.abspath(os.path.join(os.path.join(os.path.dirname(__file__), 'outputData'), outputShapeFileName)))
-        shape_files3_reference.to_file(os.path.abspath(os.path.join(os.path.join(os.path.dirname(__file__), 'data'), outputShapeFileName)))
+        # shape_files3_reference.to_file(os.path.abspath(os.path.join(os.path.join(os.path.dirname(__file__), 'data'), outputShapeFileName)))
         shape_files3_reference.to_file(os.path.abspath(os.path.join(os.path.join(os.path.dirname(__file__), 'data'), outputShapeFileName)))
 
         # newShpPath = os.path.abspath(os.path.join(os.path.join(os.path.dirname(__file__), 'outputData'), outputShapeFileName))
@@ -56,8 +57,8 @@ def index(request):
             dataset1Geometries = shape_files1_reference.geometry
             dataset2Geometries = shape_files2_reference.geometry
 
-            totalDatasetPoints = dataset1Geometries.size  # shape_files1_reference.size
-            absTotalTestPoints = dataset2Geometries.size  # shape_files2_reference.size
+            # totalDatasetPoints = dataset1Geometries.size  # shape_files1_reference.size
+            # absTotalTestPoints = dataset2Geometries.size  # shape_files2_reference.size
             globalD = 0
             area = shape_files3_reference.geometry  # shape_files3_reference.area
 
@@ -101,25 +102,60 @@ def index(request):
                 print(e)
 
 
-            for a in area:
+            shapePoints1list = []
+            shapePoints2list = []
 
-                shp1Points = finfPontsWithInArea(a, dataset1Geometries)
-                shp2Points = finfPontsWithInArea(a, dataset2Geometries)
+            ##performance improvement code starts
+            print("rtree starts::",time.time()-startTime)
+            try:
+                sindex1 = shape_files1_reference.sindex
+                for har in area:    #first loop
+                    possible_matches_index1 = list(sindex1.intersection(har.bounds))
+                    possible_matches1 = shape_files1_reference.iloc[possible_matches_index1]
+                    precise_matches1 = possible_matches1[possible_matches1.intersects(har)]
+                    shapePoints1list.append(precise_matches1.geometry.to_crs("EPSG:4326").size)
+            except Exception as en:
+                print("Exception occurred in rtree block1::",en)
+            try:
+                sindex2 = shape_files2_reference.sindex
+                for har in area:    #second loop
+                    possible_matches_index2 = list(sindex2.intersection(har.bounds))
+                    possible_matches2 = shape_files2_reference.iloc[possible_matches_index2]
+                    precise_matches2 = possible_matches2[possible_matches2.intersects(har)]
+                    shapePoints2list.append(precise_matches2.geometry.to_crs("EPSG:4326").size)
+            except Exception as en:
+                print("Exception occurred in rtree block2::",en)
+
+            print("rtree ends::", time.time() - startTime)
+
+
+            ##performance improvement code ends
+            
+            for index, ar in shape_files3_reference.iterrows():
+                a = ar['geometry']
+
+                shp1Points = shapePoints1list[index]
+
+                shp2Points = shapePoints2list[index]
+            # for a in area:
+
+                # shp1Points = finfPontsWithInArea(a, dataset1Geometries)
+                # shp2Points = finfPontsWithInArea(a, dataset2Geometries)
                 sumPoints = shp1Points + shp2Points
                 diffPoints = abs(shp1Points - shp2Points)
                 r = 0
 
-                mc1 = [0]*monteCarlo
-                mc2 = [0]*monteCarlo
-                mcNull = [0]*monteCarlo
-                mcDiff = [0]*monteCarlo
+                # mc1 = [0]*monteCarlo
+                # mc2 = [0]*monteCarlo
+                # mcNull = [0]*monteCarlo
+                # mcDiff = [0]*monteCarlo
 
                 try:
                     monteCarloArray = np.arange(monteCarlo)
-                    mc1Array = [0]*monteCarlo
-                    mc2Array = [0]*monteCarlo
-                    mcDiffArray = [0]*monteCarlo    #np.array(mcDiff)
-                    mcNullArray = [0]*monteCarlo    #np.array(mcNull)
+                    # mc1Array = [0]*monteCarlo
+                    # mc2Array = [0]*monteCarlo
+                    # mcDiffArray = [0]*monteCarlo    #np.array(mcDiff)
+                    # mcNullArray = [0]*monteCarlo    #np.array(mcNull)
 
                     vfunc1 = np.vectorize(monteCarloRuns, otypes=[np.int])
                     mr = vfunc1(monteCarloArray, r, monteCarlo, sumPoints, diffPoints)
