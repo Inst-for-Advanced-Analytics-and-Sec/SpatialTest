@@ -113,7 +113,8 @@ def index(request):
                     possible_matches_index1 = list(sindex1.intersection(har.bounds))
                     possible_matches1 = shape_files1_reference.iloc[possible_matches_index1]
                     precise_matches1 = possible_matches1[possible_matches1.intersects(har)]
-                    shapePoints1list.append(precise_matches1.geometry.to_crs("EPSG:4326").size)
+#                     shapePoints1list.append(precise_matches1.geometry.to_crs("EPSG:4326").size)
+                    shapePoints1list.append(precise_matches1.geometry.size)
             except Exception as en:
                 print("Exception occurred in rtree block1::",en)
             try:
@@ -122,7 +123,8 @@ def index(request):
                     possible_matches_index2 = list(sindex2.intersection(har.bounds))
                     possible_matches2 = shape_files2_reference.iloc[possible_matches_index2]
                     precise_matches2 = possible_matches2[possible_matches2.intersects(har)]
-                    shapePoints2list.append(precise_matches2.geometry.to_crs("EPSG:4326").size)
+#                     shapePoints2list.append(precise_matches2.geometry.to_crs("EPSG:4326").size)
+                    shapePoints2list.append(precise_matches2.geometry.size)
             except Exception as en:
                 print("Exception occurred in rtree block2::",en)
 
