@@ -20,6 +20,7 @@
                 <form action="{% url 'fileupload:success' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <p>
+    <p style="margin-center;font-family:calibri;color:red"><b>Click on the PLOT to download the image</b><p>
 <!--                        .center {-->
 <!--                            display: block;-->
 <!--                            margin-left: auto;-->
@@ -40,15 +41,28 @@
                             <figcaption style="font-family:calibri;"><b><u>Base-Test-Area Plot :</u></b></figcaption>
                             <p></p>
                             <label style="font-family:calibri;color:red"><b>Blue Point: Base Data Point<p></p> Red Point: Test Data Point</b></label>
+                            <a href="{%static 'ShapePlot2.png'%}" download>
                             <img src="{%static 'ShapePlot2.png'%}" alt="Shape Plot2" width="800" height="600"
                              style="border:5px solid black;display:block;margin-left:auto;margin-right:auto">
+                            </a>
+
+
+
+
+<!--                            <a href="/images/myw3schoolsimage.jpg" download>-->
+<!--                                <img src="{%static 'ShapePlot2.png'%}" alt="W3Schools" width="400" height="300">-->
+<!--                            </a>-->
+
+
                             <br></br>
                             <figcaption style="font-family:calibri;"><b><u>Area Plot :</u></b></figcaption><p></p>
                             <label style="font-family:calibri;color:red;"><b>White Region: pVal > 0.05 </b></label><p></p>
                             <label style="font-family:calibri;color:red"><b>Blue Region: (Base Data Points > Dataset2 Points) and pVal <= 0.05</b></label><p></p>
                             <label style="font-family:calibri;color:red"><b>Red Region: (Base Data Points < Dataset2 Points) and pVal <= 0.05</b></label><p></p>
+                            <a href="{%static 'ShapePlot2.png'%}" download>
                             <img src="{%static 'shapeAreas.png'%}" alt="Shape Plot" width="800" height="600"
                              style="border:5px solid black;display:block;margin-left:auto;margin-right:auto">
+                            </a>
                             <br></br>
 <!--    width="600" height="450"-->
 <!--                        </centre>-->
