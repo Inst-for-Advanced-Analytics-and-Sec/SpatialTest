@@ -3,6 +3,57 @@
         <title>
             SPATIAL TEST
         </title>
+<style>
+#overlay {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 2;
+  cursor: pointer;
+}
+
+#text{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 50px;
+  color: white;
+  transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+}
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  margin-top:80px;
+margin-right:auto;
+margin-bottom:0;
+margin-left:auto;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+
     </head>
     <body style="margin-top: 30px;margin-center: 30px;background-color:lightblue;">
 <!--    background-color: grey;-->
@@ -60,6 +111,8 @@
                    multiple class="form-control"
                    id="fileInput4" placeholder="Shapefiles"/> <label style="font-family:calibri;color:red;"><b>Input file with .shp extension</b></label>
             <p></p>
+
+
 
 <!--            <label style="font-family:calibri;" for="OutputData"><b>Output Data :</b></label>-->
 <!--            <input type="text" id="OutputData" name="OutputData" style="border: 1px solid black; padding: 5px;" >-->
@@ -221,9 +274,23 @@
             <br></br>
             <h3 style="font-family:calibri;"><b><u>Run Model :</u></b></h3>
             <input type="submit"
+                   onclick="on()"
                    value="Run"
                    style="border: 1px solid green; padding:5px; border-radius: 2px; cursor: pointer;" />
+            <div id="overlay" onclick="off()">
 
+  <div class="loader"></div>
+                <div id="text">Loading...</div>
+</div>
+            <script>
+function on() {
+  document.getElementById("overlay").style.display = "block";
+}
+
+function off() {
+  document.getElementById("overlay").style.display = "none";
+}
+</script>
         </form>
         <p></p>
 <!--        <hr>-->
