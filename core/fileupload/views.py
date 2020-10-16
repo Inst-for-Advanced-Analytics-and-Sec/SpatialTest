@@ -1,4 +1,6 @@
 import os
+import shutil
+import zipfile
 
 from random import *
 
@@ -29,6 +31,17 @@ def index(request):
     elif "POST" == request.method:
         # print("entering index post method")
         startTime = time.time()
+        client_file = request.FILES["shape_fileZip"]
+
+        try:
+            zipPath = os.path.dirname(__file__)
+            zipPathData = os.path.join(os.path.dirname(__file__), 'data')
+
+            with zipfile.ZipFile(client_file) as file:
+                file.extractall(zipPath)
+
+        except Exception as exx:
+            print("error occurred during unzip")
         shape_files1 = request.FILES["shape_file1"]  #Dataset1 points shape file
         shape_files2 = request.FILES["shape_file2"]  #Dataset2 points shape file
         shape_files3 = request.FILES["shape_file3"]  #Area shape file  #area_shape_files = request.FILES["shape_file3"]
@@ -231,9 +244,14 @@ def index(request):
 
 
             savePath = os.path.abspath(os.path.join(os.path.join(os.path.dirname(__file__), 'static'), 'ShapePlot2.png'))
+            print(savePath)
+            savePath22 = os.path.abspath(os.path.join('static', 'ShapePlot2.png'))
+            # print(savePath22)
+
             plt.legend(bbox_to_anchor=(0,1.01), loc='lower left', ncol=3, handles=[red_patch, blue_patch, white_patch])
             plt.xticks(rotation=45)
             plt.savefig(savePath)
+            plt.savefig(savePath22)
 
             outPut_Reference = gpd.read_file(newShpPath)
             st = 'colFlag'
@@ -243,9 +261,13 @@ def index(request):
             white_patch = mpatches.Patch(facecolor='white', label='Base Dataset = Test Dataset', edgecolor='black')
             outPut_Reference.boundary.plot(ax=ax, facecolor=outPut_Reference[st], edgecolor='black' )
             savePath1 = os.path.abspath(os.path.join(os.path.join(os.path.dirname(__file__), 'static'), 'shapeAreas.png'))
+
+            savePath11 = os.path.abspath(os.path.join('static', 'shapeAreas.png'))
+
             plt.legend(bbox_to_anchor=(0, 1.01), loc='lower left', ncol=2, handles=[red_patch, blue_patch, white_patch])
             plt.xticks(rotation=45)
             plt.savefig(savePath1)
+            plt.savefig(savePath11)
         except Exception as ex:
             print(ex)
 
